@@ -8,6 +8,10 @@ from flask_cors import CORS
 app = Flask(__name__)
 CORS(app)
 
+@app.route('/')
+def index():
+    return send_file('index.html')
+
 @app.route('/upload', methods=['POST'])
 def upload_pdfs():
     if 'pdfFiles' not in request.files:
@@ -16,7 +20,6 @@ def upload_pdfs():
     if not files or files[0].filename == '':
         return jsonify({'error': 'No selected files'}), 400
 
-    main_tables = pd.DataFrame()
     temp_files = []
 
     try:
@@ -24,28 +27,38 @@ def upload_pdfs():
             # Save PDF to a temporary file
             temp = tempfile.NamedTemporaryFile(delete=False, suffix='.pdf')
             file.save(temp.name)
-            temp_files.append(temp.name)
+            temp_files.append((temp.name, file.filename))
             temp.close()
 
-        for pdf_path in temp_files:
-            try:
-                tables = camelot.read_pdf(pdf_path, pages='all')
-                for table in tables:
-                    main_tables = pd.concat([main_tables, table.df], ignore_index=True)
-            except Exception as e:
-                print(f"Error processing {pdf_path}: {e}")
+        # Create a temp Excel file and get its path
+        temp_excel = tempfile.NamedTemporaryFile(delete=False, suffix='.xlsx')
+        excel_path = temp_excel.name
+        temp_excel.close()
 
-        # Export to Excel
-        output = tempfile.NamedTemporaryFile(delete=False, suffix='.xlsx')
-        main_tables.to_excel(output.name, index=False)
-        output.close()
+        with pd.ExcelWriter(excel_path, engine='xlsxwriter') as writer:
+            for pdf_path, orig_filename in temp_files:
+                try:
+                    tables = camelot.read_pdf(pdf_path, pages='all')
+                    dfs = []
+                    for table in tables:
+                        df = table.df
+                        df.columns = df.iloc[0]
+                        df = df[1:]
+                        dfs.append(df)
+                    if dfs:
+                        combined_df = pd.concat(dfs, ignore_index=True)
+                        sheet_name = os.path.splitext(orig_filename)[0][:31]
+                        sheet_name = ''.join(c if c.isalnum() or c in ' _-' else '_' for c in sheet_name)
+                        combined_df.to_excel(writer, sheet_name=sheet_name, index=False)
+                except Exception as e:
+                    print(f"Error processing {pdf_path}: {e}")
 
-        return send_file(output.name, as_attachment=True, download_name='all_tables.xlsx')
+        return send_file(excel_path, as_attachment=True, download_name='all_tables.xlsx')
     finally:
         # Clean up temp files
-        for f in temp_files:
+        for f, _ in temp_files:
             if os.path.exists(f):
                 os.remove(f)
 
 if __name__ == '__main__':
-    app.run(debug=True, port=8080) 
+    app.run(debug=True, port=8080)
