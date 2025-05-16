@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PDF 2 Excel</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background: white;
+        }
+        .center-form {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 2rem;
+        }
+        #pdfFiles {
+            margin: 0;
+            display: block;
+        }
+        #statusText {
+            margin-top: 1rem;
+            font-size: 1.1rem;
+            color: black;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <form class="center-form" id="uploadForm" method="post" enctype="multipart/form-data">
+        <input type="file" id="pdfFiles" name="pdfFiles" accept="application/pdf" multiple required>
+        <div id="statusText">Converting, will download as excel files automatically...</div>
+    </form>
+    <script>
+        const pdfInput = document.getElementById('pdfFiles');
+        const form = document.getElementById('uploadForm');
+        const statusText = document.getElementById('statusText');
+
+        pdfInput.addEventListener('change', function() {
+            if (pdfInput.files.length > 0) {
+                statusText.style.display = 'block';
+                // Use AJAX to upload files
+                const formData = new FormData(form);
+                fetch('/upload', {
+                    method: 'POST',
+                    body: formData
+                })
+                .then(response => {
+                    if (!response.ok) throw new Error('Network response was not ok');
+                    return response.blob();
+                })
+                .then(blob => {
+                    // Download the Excel file automatically
+                    const url = window.URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    a.href = url;
+                    a.download = 'all_tables.xlsx';
+                    document.body.appendChild(a);
+                    a.click();
+                    a.remove();
+                    window.URL.revokeObjectURL(url);
+                    statusText.style.display = 'none';
+                    pdfInput.value = '';
+                })
+                .catch(error => {
+                    statusText.textContent = 'Error during conversion!';
+                    statusText.style.display = 'block';
+                });
+            }
+        });
+
+        // Prevent default form submission
+        form.addEventListener('submit', function(e) {
+            e.preventDefault();
+        });
+    </script>
+</body>
+</html> 
