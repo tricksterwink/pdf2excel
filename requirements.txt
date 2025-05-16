@@ -1,0 +1,4 @@
+flask
+pandas
+camelot-py[cv]
+flask-cors 
