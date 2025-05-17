@@ -24,7 +24,7 @@ You may also need to install Ghostscript separately if you encounter issues with
 python3 app.py
 ```
 
-# Project structure:
+## Project structure:
 
 ```
 ├── app/
