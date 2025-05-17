@@ -25,18 +25,19 @@ python3 app.py
 ```
 
 # Project structure:
+
 ```
-- app/
-  - __init__.py
-  - config.py
-  - __pycache__/
-    - __init__.cpython-313.pyc
-  - static/
-    - styles.css
-  - templates/
-    - index.html
-- run.py
-- wsgi.py
-- requirements.txt
-- readme.md
+├── app/
+│   ├── __init__.py
+│   ├── config.py
+│   ├── __pycache__/
+|   |   |__ __init__.cpython-313.pyc
+│   └── static/
+│   |   └── style.css
+|   |__ templates/
+|   |   |__ index.html
+├── run.py
+├── wsgi.py
+├── requirements.txt
+└── readme.md
 ```
