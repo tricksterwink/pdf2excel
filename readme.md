@@ -2,8 +2,8 @@
 
   
 
-This project provides a Python script to extract tables from PDF files and convert them into a single Excel workbook.
-It utilizes the `camelot` library for robust table detection and extraction from PDF documents, and `pandas` for efficient data handling and output to the Excel format.
+This is a Flask web app that extracts tables from PDF files and converts them into a single Excel workbook. It leverages the `camelot` library for reliable table detection and extraction, and uses `pandas` for efficient data processing and Excel output.
+
 ## Installation
 1. Clone the repository:
 
@@ -21,7 +21,7 @@ You may also need to install Ghostscript separately if you encounter issues with
 
 3. Run the flask app on localhost:
 ```
-python3 app.py
+python3 run.py
 ```
 
 ## Project structure:
