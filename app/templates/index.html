@@ -3,33 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PDF 2 Excel</title>
-    <style>
-        body {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            margin: 0;
-            background: white;
-        }
-        .center-form {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            padding: 2rem;
-        }
-        #pdfFiles {
-            margin: 0;
-            display: block;
-        }
-        #statusText {
-            margin-top: 1rem;
-            font-size: 1.1rem;
-            color: black;
-            display: none;
-        }
-    </style>
+    <title>pdf2excel</title>
+    <link rel="stylesheet" href="/static/styles.css">
 </head>
 <body>
     <form class="center-form" id="uploadForm" method="post" enctype="multipart/form-data">
@@ -80,4 +55,4 @@
         });
     </script>
 </body>
-</html> 
+</html>

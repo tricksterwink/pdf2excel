@@ -1,0 +1,24 @@
+body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+    background: white;
+}
+.center-form {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 2rem;
+}
+#pdfFiles {
+    margin: 0;
+    display: block;
+}
+#statusText {
+    margin-top: 1rem;
+    font-size: 1.1rem;
+    color: black;
+    display: none;
+}

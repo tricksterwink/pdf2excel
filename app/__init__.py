@@ -1,16 +1,16 @@
-from flask import Flask, request, send_file, jsonify
+from flask import Flask, request, send_file, jsonify, render_template
 import pandas as pd
 import camelot
 import tempfile
 import os
 from flask_cors import CORS
 
-app = Flask(__name__)
+app = Flask(__name__, static_folder='static', template_folder='templates')
 CORS(app)
 
 @app.route('/')
 def index():
-    return send_file('index.html')
+    return render_template('index.html')
 
 @app.route('/upload', methods=['POST'])
 def upload_pdfs():
@@ -59,6 +59,3 @@ def upload_pdfs():
         for f, _ in temp_files:
             if os.path.exists(f):
                 os.remove(f)
-
-if __name__ == '__main__':
-    app.run(debug=True, port=8080)
