@@ -1,0 +1,30 @@
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.db
+*.sqlite3
+
+# macOS
+.DS_Store
+
+# Environment
+.env
+venv/
+ENV/
+
+# Docker
+*.dockerignore
+Dockerfile
+
+# Others
+*.log
+*.pot
+*.mo
+*.swp
+.idea/
+.vscode/
+
+# Ignore test and cache
+*.pytest_cache/
