@@ -1,3 +1,5 @@
 flask
 pandas
 camelot-py[cv]
+flask_cors
+xlsxwriter

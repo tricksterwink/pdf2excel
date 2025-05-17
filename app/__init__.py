@@ -38,7 +38,8 @@ def upload_pdfs():
         with pd.ExcelWriter(excel_path, engine='xlsxwriter') as writer:
             for pdf_path, orig_filename in temp_files:
                 try:
-                    tables = camelot.read_pdf(pdf_path, pages='all')
+                    tables = camelot.read_pdf(pdf_path, pages='all', flavor='lattice')
+                    print(f"{orig_filename}: Found {len(tables)} tables (lattice)")
                     dfs = []
                     for table in tables:
                         df = table.df
