@@ -23,3 +23,15 @@ You may also need to install Ghostscript separately if you encounter issues with
 ```
 python3 app.py
 ```
+
+# Project structure:
+
+- app
+  - __init__.py
+  - static
+    - styles.css
+  - templates
+    - index.html
+- run.py
+- requirements.txt
+- readme.md
