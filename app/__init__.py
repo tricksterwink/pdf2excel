@@ -38,13 +38,42 @@ def upload_pdfs():
         with pd.ExcelWriter(excel_path, engine='xlsxwriter') as writer:
             for pdf_path, orig_filename in temp_files:
                 try:
-                    tables = camelot.read_pdf(pdf_path, pages='all')
+                    # Configure Camelot with more robust settings
+                    # First try with lattice flavor (better for bordered tables)
+                    try:
+                        tables = camelot.read_pdf(
+                            pdf_path,
+                            pages='all',
+                            flavor='lattice',
+                            strip_text='\n',
+                            table_areas=['0,1000,1000,0'],
+                            process_background=True
+                        )
+                    except Exception as e:
+                        print(f"Lattice failed, trying stream: {e}")
+                        # Fall back to stream flavor if lattice fails
+                        tables = camelot.read_pdf(
+                            pdf_path,
+                            pages='all',
+                            flavor='stream',
+                            strip_text='\n',
+                            edge_tol=500,
+                            row_tol=10,
+                            table_areas=['0,1000,1000,0']
+                        )
+                    
                     dfs = []
-                    for table in tables:
-                        df = table.df
-                        df.columns = df.iloc[0]
-                        df = df[1:]
-                        dfs.append(df)
+                    for i, table in enumerate(tables):
+                        try:
+                            df = table.df
+                            if len(df) > 1:  # Only process if table has more than one row
+                                # Use first row as header if it looks like a header
+                                if all(isinstance(x, str) and x.strip() for x in df.iloc[0]):
+                                    df.columns = df.iloc[0]
+                                    df = df[1:]
+                                dfs.append(df)
+                        except Exception as e:
+                            print(f"Error processing table {i+1} in {pdf_path}: {e}")
                     if dfs:
                         combined_df = pd.concat(dfs, ignore_index=True)
                         sheet_name = os.path.splitext(orig_filename)[0][:31]
@@ -53,9 +82,29 @@ def upload_pdfs():
                 except Exception as e:
                     print(f"Error processing {pdf_path}: {e}")
 
-        return send_file(excel_path, as_attachment=True, download_name='all_tables.xlsx')
+        # Ensure the file is readable before sending
+        os.chmod(excel_path, 0o444)  # Make it read-only before sending
+        
+        # Create a response and ensure proper cleanup
+        try:
+            return send_file(
+                excel_path,
+                as_attachment=True,
+                download_name='all_tables.xlsx',
+                mimetype='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+            )
+        finally:
+            # Clean up the Excel file after sending
+            if os.path.exists(excel_path):
+                try:
+                    os.remove(excel_path)
+                except:
+                    pass
     finally:
-        # Clean up temp files
+        # Clean up temp PDF files
         for f, _ in temp_files:
             if os.path.exists(f):
-                os.remove(f)
+                try:
+                    os.remove(f)
+                except:
+                    pass
