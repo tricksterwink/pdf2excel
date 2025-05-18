@@ -1,6 +1,6 @@
 # PDF to Excel Converter
 
-A web application that extracts tables from PDF files and converts them into Excel workbooks.
+A Flask web app that extracts tables from PDF files and converts them into a single Excel workbook. It uses `camelot` for table extraction and `pandas` for data manipulation. It is Containerized using Docker. 
 
 ## Quick Start
 
