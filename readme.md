@@ -1,43 +1,35 @@
-# pdf2excel
+# PDF to Excel Converter
 
-  
+A web application that extracts tables from PDF files and converts them into Excel workbooks.
 
-This is a Flask web app that extracts tables from PDF files and converts them into a single Excel workbook. It leverages the `camelot` library for reliable table detection and extraction, and uses `pandas` for efficient data processing and Excel output.
+## Quick Start
 
-## Installation
-1. Clone the repository:
+1. Install dependencies:
+   ```bash
+   pip install -r requirements.txt
+   ```
 
-```
-git clone https://github.com/tricksterwink/pdf2excel.git
-cd pdf2excel
-```
-2. Install the required Python libraries, including `camelot`:
+2. Run the application:
+   ```bash
+   python run.py
+   ```
+   Visit `http://localhost:5000`
 
-```
-pip install -r requirements.txt
-```
-
-You may also need to install Ghostscript separately if you encounter issues with `camelot`. Refer to the `camelot` documentation for details.
-
-3. Run the flask app on localhost:
-```
-python3 run.py
+### With Docker
+```bash
+docker build -t pdf2excel .
+docker run -p 5000:8080 pdf2excel
 ```
 
-## Project structure:
+## Project Structure
 
 ```
-├── app/
-│   ├── __init__.py
-│   ├── config.py
-│   ├── __pycache__/
-|   |   |__ __init__.cpython-313.pyc
-│   └── static/
-│   |   └── style.css
-|   |__ templates/
-|   |   |__ index.html
-├── run.py
-├── wsgi.py
-├── requirements.txt
-└── readme.md
+pdf2excel/
+├── app/                  # Application code
+│   ├── __init__.py       # Main Flask app
+│   ├── static/           # CSS/JS assets
+│   └── templates/        # HTML templates
+├── Dockerfile            # Container configuration
+├── requirements.txt      # Python dependencies
+└── run.py                # Entry point
 ```
